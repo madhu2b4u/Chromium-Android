@@ -109,6 +109,7 @@ public class StreamRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHold
       return new ZeroStateViewHolder(parent.getContext(), frameLayout, cardConfiguration);
     }
 
+
     return new PietViewHolder(
         cardConfiguration,
         frameLayout,

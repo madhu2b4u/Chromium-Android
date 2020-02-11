@@ -128,9 +128,7 @@ class FeedNewTabPageMediator
         boolean suggestionsVisible =
                 PrefServiceBridge.getInstance().getBoolean(Pref.NTP_ARTICLES_LIST_VISIBLE);
         Resources res = mCoordinator.getSectionHeaderView().getResources();
-        mSectionHeader =
-                new SectionHeader(res.getString(R.string.ntp_article_suggestions_section_header),
-                        suggestionsVisible, this::onSectionHeaderToggled);
+        mSectionHeader = new SectionHeader(res.getString(R.string.ntp_article_suggestions_section_header), suggestionsVisible, this::onSectionHeaderToggled);
         mPrefChangeRegistrar.addObserver(Pref.NTP_ARTICLES_LIST_VISIBLE, this::updateSectionHeader);
         mCoordinator.getSectionHeaderView().setHeader(mSectionHeader);
         stream.setStreamContentVisibility(mSectionHeader.isExpanded());
