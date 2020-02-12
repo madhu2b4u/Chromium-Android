@@ -3,12 +3,12 @@ package news;
 import news.model.NewsResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface NewsApi {
 
     String BASE_URL = "https://newsapi.org/v2/";
-    String API_KEY ="02ff2aa7041041f2b3802c30cba1aea9";
 
-    @GET("top-headlines?country=in&apiKey="+API_KEY)
-    Call<NewsResponse> getNewsResponse();
+    @GET("top-headlines")
+    Call<NewsResponse> getNewsResponse(@Query("country") String country, @Query("apiKey") String apiKey);
 }

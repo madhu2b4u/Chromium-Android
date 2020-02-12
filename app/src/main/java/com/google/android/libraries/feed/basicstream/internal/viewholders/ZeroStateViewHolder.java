@@ -21,6 +21,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutParams;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,12 +34,11 @@ import android.widget.Toast;
 import com.google.android.libraries.feed.common.ui.LayoutUtils;
 import com.google.android.libraries.feed.host.stream.CardConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.chromium.base.ContextUtils;
+import org.chromium.base.annotations.CalledByNative;
 
 import news.NewsAdapter;
 import news.NewsApi;
-import news.model.Article;
 import news.model.NewsResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,6 +53,7 @@ public class ZeroStateViewHolder extends FeedViewHolder {
   @VisibleForTesting static final int MORNING_HOUR_START = 0;
   @VisibleForTesting static final int AFTERNOON_HOUR_START = 12;
   @VisibleForTesting static final int EVENING_HOUR_START = 17;
+  private static final String API_KEY ="02ff2aa7041041f2b3802c30cba1aea9";
 
   private final View zeroStateView;
   private final View loadingSpinner;
@@ -76,7 +77,6 @@ public class ZeroStateViewHolder extends FeedViewHolder {
     getNews();
 
     recyclerView.setLayoutManager(new LinearLayoutManager(context));
-    recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
     this.cardConfiguration = cardConfiguration;
   }
 
@@ -112,7 +112,6 @@ public class ZeroStateViewHolder extends FeedViewHolder {
 
   public void showSpinner(boolean showSpinner) {
     loadingSpinner.setVisibility(showSpinner ? View.VISIBLE : View.GONE);
-    zeroStateView.setVisibility(showSpinner ? View.GONE : View.VISIBLE);
   }
 
   @StringRes
@@ -126,38 +125,51 @@ public class ZeroStateViewHolder extends FeedViewHolder {
     }
   }
 
-  private List<String> generateData(NewsResponse heroList) {
-    List<String> data = new ArrayList<>();
-    List<Article> articles;
-    articles = heroList.getArticles();
-    for (int i = 0; i < articles.size(); i++) {
-      data.add(articles.get(i).getTitle());
-    }
-    return data;
-  }
-
-
   private void getNews() {
+    showSpinner(true);
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(NewsApi.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
+            .addConverterFactory(GsonConverterFactory.create())
             .build();
 
     NewsApi api = retrofit.create(NewsApi.class);
 
-    Call<NewsResponse> call = api.getNewsResponse();
+    Call<NewsResponse> call = api.getNewsResponse(getCountryCode(),API_KEY);
 
     call.enqueue(new Callback<NewsResponse>() {
       @Override
       public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
         newsResponse = response.body();
-        recyclerView.setAdapter(new NewsAdapter(generateData(newsResponse)));
+        recyclerView.setAdapter(new NewsAdapter(newsResponse.getArticles()));
+        showSpinner(false);
       }
-
       @Override
       public void onFailure(Call<NewsResponse> call, Throwable t) {
         Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
       }
     });
   }
+
+  /**
+   * Returns the country that the device is currently located in. This currently only works
+   * for devices with active SIM cards. For a more general solution, we should probably use
+   * the LocationManager together with the Geocoder.
+   */
+  @CalledByNative
+  private String getCountryCode() {
+    TelephonyManager telephonyManager =
+            (TelephonyManager) ContextUtils.getApplicationContext().getSystemService(
+                    Context.TELEPHONY_SERVICE);
+
+    // According to API, location for CDMA networks is unreliable
+    if (telephonyManager != null
+            && telephonyManager.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA)
+      return telephonyManager.getNetworkCountryIso();
+
+    return null;
+  }
+
+
+
+
 }

@@ -31,7 +31,7 @@
         android:id="@+id/zero_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/snippets_padding">
+        >
 
         <ImageView
             android:id="@+id/image"
