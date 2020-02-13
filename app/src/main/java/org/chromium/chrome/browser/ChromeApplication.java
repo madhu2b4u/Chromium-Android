@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.onesignal.OneSignal;
+
 import org.chromium.base.ActivityState;
 import org.chromium.base.ApplicationState;
 import org.chromium.base.ApplicationStatus;
@@ -47,6 +49,9 @@ import org.chromium.chrome.browser.vr.VrModuleProvider;
 import org.chromium.components.embedder_support.application.FontPreloadingWorkaround;
 import org.chromium.components.module_installer.ModuleInstaller;
 
+import news.notification.MyNotificationOpenedHandler;
+import news.notification.MyNotificationReceivedHandler;
+
 /**
  * Basic application functionality that should be shared among all browser applications that use
  * chrome layer.
@@ -57,13 +62,30 @@ public class ChromeApplication extends Application {
 
     private DiscardableReferencePool mReferencePool;
 
+    private static Context context;
+
+    public static Context getContext() {
+        return context;
+    }
+
     @Nullable
     private static ChromeAppComponent sComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getApplicationContext();
         FontPreloadingWorkaround.maybeInstallWorkaround(this);
+        OneSignal.startInit(this)
+                .setNotificationOpenedHandler(new MyNotificationOpenedHandler())
+                .setNotificationReceivedHandler( new MyNotificationReceivedHandler() )
+                .init();
+
+
+
+
+                       /*.inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true) */
     }
 
     // Called by the framework for ALL processes. Runs before ContentProviders are created.

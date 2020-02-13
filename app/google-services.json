@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "132809155271",
+    "firebase_url": "https://chromium-dd327.firebaseio.com",
+    "project_id": "chromium-dd327",
+    "storage_bucket": "chromium-dd327.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132809155271:android:3c7240ffb05f783d3d14e2",
+        "android_client_info": {
+          "package_name": "org.chromium.chrome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "132809155271-4gvf2jaesdeid94k40g91r86me0g12v6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.chromium.chrome",
+            "certificate_hash": "fb4df7b9a125dc7619b7c775cf4e35731fa18ab6"
+          }
+        },
+        {
+          "client_id": "132809155271-884g3qq3ebke5t9alknafqkl3ap8rrit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvuniADNqkUCCEzNtwTnuEbJwv9-8_GTo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "132809155271-884g3qq3ebke5t9alknafqkl3ap8rrit.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
