@@ -17,7 +17,6 @@ package com.google.android.libraries.feed.basicstream.internal.viewholders;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.annotation.VisibleForTesting;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutParams;
@@ -31,11 +30,15 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.libraries.feed.common.ui.LayoutUtils;
 import com.google.android.libraries.feed.host.stream.CardConfiguration;
 
 import org.chromium.base.ContextUtils;
 import org.chromium.base.annotations.CalledByNative;
+import org.chromium.chrome.R;
 
 import news.NewsAdapter;
 import news.NewsApi;
@@ -54,7 +57,7 @@ public class ZeroStateViewHolder extends FeedViewHolder {
   @VisibleForTesting static final int AFTERNOON_HOUR_START = 12;
   @VisibleForTesting static final int EVENING_HOUR_START = 17;
   private static final String API_KEY ="02ff2aa7041041f2b3802c30cba1aea9";
-
+  private AdView mAdView;
   private final View zeroStateView;
   private final View loadingSpinner;
   private final View actionButton;
@@ -63,11 +66,11 @@ public class ZeroStateViewHolder extends FeedViewHolder {
   private NewsAdapter newsAdapter;
   RecyclerView recyclerView;
   private NewsResponse newsResponse;
-
   public ZeroStateViewHolder(
       Context context, FrameLayout frameLayout, CardConfiguration cardConfiguration) {
     super(frameLayout);
     View view = LayoutInflater.from(context).inflate(R.layout.zero_state, frameLayout);
+    MobileAds.initialize(context, "ca-app-pub-8074170810868474~1582387593");
 
     loadingSpinner = view.findViewById(R.id.loading_spinner);
     recyclerView = view.findViewById(R.id.rv_child);
@@ -75,6 +78,9 @@ public class ZeroStateViewHolder extends FeedViewHolder {
     actionButton = view.findViewById(R.id.action_button);
     bodyText = view.findViewById(R.id.body_text);
     getNews();
+    mAdView =  view.findViewById(R.id.adView);
+    AdRequest adRequest = new AdRequest.Builder().addTestDevice("07BFE3F6C306FCC3D53D0AD3A3464FEA").build();
+    mAdView.loadAd(adRequest);
 
     recyclerView.setLayoutManager(new LinearLayoutManager(context));
     this.cardConfiguration = cardConfiguration;

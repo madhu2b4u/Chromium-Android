@@ -3,6 +3,7 @@ package news;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.tvDesc.setText(article.getDescription());
         Glide.with(holder.ivImage.getContext()).load(article.getUrlToImage()).into(holder.ivImage);
         holder.itemView.setOnClickListener(v -> {
+
+
+
+
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(article.getUrl()));
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             browserIntent.setPackage("org.chromium.chrome");
